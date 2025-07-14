@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: petclinic
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 8080
@@ -32,10 +32,10 @@ spec:
         - name: workload
           image: dsyer/petclinic
           env:
-            - name: SPRING_PROFILES_ACTIVE
-              value: postgres
-            - name: SERVICE_BINDING_ROOT
-              value: /bindings
+#            - name: SPRING_PROFILES_ACTIVE
+#              value: postgres
+#            - name: SERVICE_BINDING_ROOT
+#              value: /bindings
             - name: SPRING_APPLICATION_JSON
               value: |
                 {
@@ -52,13 +52,44 @@ spec:
             httpGet:
               path: /readyz
               port: http
-          volumeMounts:
-            - mountPath: /bindings/secret
-              name: binding
-              readOnly: true
-      volumes:
-        - name: binding
-          projected:
-            sources:
-              - secret:
-                  name: demo-db
+#          volumeMounts:
+#            - mountPath: /bindings/secret
+#              name: binding
+#              readOnly: true
+#      volumes:
+#        - name: binding
+#          projected:
+#            sources:
+#              - secret:
+#                  name: demo-db
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: petclinic
+  namespace: default
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "false"
+spec:
+  entryPoints:
+    - web
+  routes:
+    - kind: Rule
+      match: Host(`localhost`)
+      middlewares:
+        - name: petclinic-pathparam-regex
+          namespace: default
+      services:
+        - name: petclinic
+          port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: petclinic-pathparam-regex
+  namespace: default
+spec:
+  replacePathRegex:
+    regex: ^/(.*)
+    replacement: /$1

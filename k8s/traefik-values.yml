@@ -1,0 +1,11 @@
+ingressRoute:
+  dashboard:
+    enabled: true
+    entryPoints: [ "web", "traefik" ]
+ports:
+  traefik:
+    web:
+      expose:
+        default:true
+      exposedPort: 80
+      protocol: TCP
