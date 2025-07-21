@@ -1,6 +1,7 @@
 ingressRoute:
   dashboard:
     enabled: true
+    matchRule: Host(`localhost`) && PathPrefix(`/dashboard`) || PathPrefix(`/api`)
     entryPoints: [ "web", "traefik" ]
 ports:
   traefik:

@@ -30,12 +30,8 @@ spec:
     spec:
       containers:
         - name: workload
-          image: dsyer/petclinic
+          image: spring-petclinic:3.5.0-SNAPSHOT
           env:
-#            - name: SPRING_PROFILES_ACTIVE
-#              value: postgres
-#            - name: SERVICE_BINDING_ROOT
-#              value: /bindings
             - name: SPRING_APPLICATION_JSON
               value: |
                 {
@@ -44,27 +40,8 @@ spec:
           ports:
             - name: http
               containerPort: 8080
-          livenessProbe:
-            httpGet:
-              path: /livez
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /readyz
-              port: http
-#          volumeMounts:
-#            - mountPath: /bindings/secret
-#              name: binding
-#              readOnly: true
-#      volumes:
-#        - name: binding
-#          projected:
-#            sources:
-#              - secret:
-#                  name: demo-db
-
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: petclinic
@@ -84,7 +61,7 @@ spec:
         - name: petclinic
           port: 80
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: Middleware
 metadata:
   name: petclinic-pathparam-regex
@@ -93,3 +70,4 @@ spec:
   replacePathRegex:
     regex: ^/(.*)
     replacement: /$1
+

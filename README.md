@@ -25,6 +25,10 @@ java -jar target/*.jar
 
 Navigate to ```http://localhost```
 
+### Verify api endpoint
+
+```curl http://localhost/v1/api/owners/3```
+
 ## Understanding the Spring Petclinic application with a few diagrams
 
 [See the presentation here](https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application)
