@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.owner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,7 @@ public class OwnerApiController {
 		this.owners = owners;
 	}
 
+	@CrossOrigin(origins = { "*" })
 	@GetMapping("/v1/api/owners/{ownerId}")
 	public Owner getOwner(@PathVariable String ownerId) {
 
